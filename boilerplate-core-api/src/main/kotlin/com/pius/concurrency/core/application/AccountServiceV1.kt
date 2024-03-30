@@ -52,5 +52,22 @@ class AccountServiceV1(
     fun decreaseV4(id: Long, amount: Long) {
         writer.decreaseBalanceV4(id, amount)
 
+    }
+
+    /**
+     * 동시성 제어 - optimistic lock
+     * */
+    fun decreaseV5(id: Long, amount: Long) {
+        while (true) {
+            try {
+                writer.decreaseBalanceV5(id, amount)
+                return
+            } catch (e: Exception) {
+                println("Retrying")
+                Thread.sleep(500)
+            }
+
+        }
+    }
 }
 

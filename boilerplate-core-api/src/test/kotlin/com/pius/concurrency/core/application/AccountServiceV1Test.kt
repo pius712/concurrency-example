@@ -93,4 +93,55 @@ class AccountServiceV1Test(
         Assertions.assertThat(saved.balance).isEqualTo(0)
     }
 
+
+    @Test
+    fun `비관적 락 사용`() {
+        // 테스트 실패
+        val totalCount = 100
+        val amount = 100L
+        val latch = CountDownLatch(totalCount)
+        val account = accountService.createAccount(totalCount * amount)
+        println(totalCount * amount)
+        val executorService = Executors.newFixedThreadPool(32)
+        var success = 0
+        for (i in 1..totalCount) {
+            executorService.execute {
+                accountService.decreaseV4(account.id!!, amount)
+//                if (isSuccess) success++
+                latch.countDown()
+            }
+        }
+
+        // 테스트 스레드 대기
+        latch.await()
+
+        val saved = repository.findByIdOrNull(account.id!!) ?: throw RuntimeException("Account not found")
+        Assertions.assertThat(saved.balance).isEqualTo(0)
+    }
+
+
+    @Test
+    fun `낙관적 락 사용`() {
+        // 테스트 실패
+        val totalCount = 100
+        val amount = 100L
+        val latch = CountDownLatch(totalCount)
+        val account = accountService.createAccount(totalCount * amount)
+        println(totalCount * amount)
+        val executorService = Executors.newFixedThreadPool(32)
+        var success = 0
+        for (i in 1..totalCount) {
+            executorService.execute {
+                accountService.decreaseV5(account.id!!, amount)
+//                if (isSuccess) success++
+                latch.countDown()
+            }
+        }
+
+        // 테스트 스레드 대기
+        latch.await()
+
+        val saved = repository.findByIdOrNull(account.id!!) ?: throw RuntimeException("Account not found")
+        Assertions.assertThat(saved.balance).isEqualTo(0)
+    }
 }

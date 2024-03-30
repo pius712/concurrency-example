@@ -50,8 +50,16 @@ class AccountWriter(
         val account = accountRepository.findByIdOrNull(id) ?: throw RuntimeException("Account not found")
         accountRepository.updateByIdAndBalance(id, account.balance - amount, account.balance)
     }
-    
-    fun decreaseBalanceV4(id: Long, amount: Long) {
 
+    @Transactional
+    fun decreaseBalanceV4(id: Long, amount: Long) {
+        val account = accountRepository.findByIdUsingPessimisticLock(id)
+        account.balance -= amount
+    }
+
+    @Transactional
+    fun decreaseBalanceV5(id: Long, amount: Long) {
+        val account = accountRepository.findByIdUsingOptimisticLock(id)
+        account.balance -= amount
     }
 }
