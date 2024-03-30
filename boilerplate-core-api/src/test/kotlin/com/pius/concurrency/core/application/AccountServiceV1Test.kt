@@ -30,7 +30,7 @@ class AccountServiceV1Test(
 
         for (i in 1..100) {
             executorService.execute {
-                accountService.decrementBalance(account.id!!, amount)
+                accountService.decreaseV1(account.id!!, amount)
                 latch.countDown()
             }
         }
@@ -54,7 +54,33 @@ class AccountServiceV1Test(
         var success = 0
         for (i in 1..100) {
             executorService.execute {
-                accountService.decreaseBalanceV2(account.id!!, amount)
+                accountService.decreaseV2(account.id!!, amount)
+//                if (isSuccess) success++
+                latch.countDown()
+            }
+        }
+
+        // 테스트 스레드 대기
+        latch.await()
+
+        val saved = repository.findByIdOrNull(account.id!!) ?: throw RuntimeException("Account not found")
+        Assertions.assertThat(saved.balance).isEqualTo(0)
+    }
+
+
+    @Test
+    fun `where 절 사용`() {
+        // 테스트 실패
+        val totalCount = 100
+        val amount = 100L
+        val latch = CountDownLatch(totalCount)
+        val account = accountService.createAccount(totalCount * amount)
+        println(totalCount * amount)
+        val executorService = Executors.newFixedThreadPool(32)
+        var success = 0
+        for (i in 1..totalCount) {
+            executorService.execute {
+                accountService.decreaseV3(account.id!!, amount)
 //                if (isSuccess) success++
                 latch.countDown()
             }
