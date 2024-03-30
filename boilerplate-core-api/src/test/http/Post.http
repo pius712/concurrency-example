@@ -1,0 +1,12 @@
+### Member
+POST {{host}}/api/v1/member/create
+content-type: application/json
+
+{
+
+}
+
+### Member 조회
+GET {{host}}/api/v1/member/1
+content-type: application/json
+

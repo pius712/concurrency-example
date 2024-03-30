@@ -1,0 +1,21 @@
+example:
+  api:
+    url: https://jsonplaceholder.typicode.com
+    description: Example API
+
+spring.cloud.openfeign:
+  httpclient:
+    hc5:
+      enabled: true
+    timeToLiveUnit: MILLISECONDS
+    timeToLive: 4000
+    connectionTimeout: 2000
+
+
+
+logging:
+  level:
+    com:
+      pius:
+        boilerplate:
+          client: DEBUG

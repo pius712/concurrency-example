@@ -1,0 +1,21 @@
+spring:
+  config:
+    import:
+      - example-client.yml
+
+
+
+spring.cloud.openfeign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+
+
+
+logging:
+  level:
+    com:
+      pius:
+        boilerplate:
+          client: DEBUG

@@ -1,0 +1,35 @@
+spring:
+  config:
+    import:
+      - example-client.yml
+      - db-core.yml
+
+  application:
+    name: hello-spring-api
+logging:
+  level:
+    root: info
+---
+spring:
+  config:
+    activate:
+      on-profile: local-dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: staging
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: live
