@@ -1,4 +1,5 @@
 example:
+  description: Example client
   api:
     url: https://jsonplaceholder.typicode.com
     description: Example API
